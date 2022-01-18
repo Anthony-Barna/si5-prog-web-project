@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PhotoModule } from './photo/photo.module';
-import { Photo } from './photo/photo.entity';
+import { SalesPointModule } from './sales-point/sales-point.module';
+import { SalesPoint } from './entity/sales-point.entity';
 
 @Module({
   imports: [
@@ -9,10 +9,10 @@ import { Photo } from './photo/photo.entity';
       type: 'mongodb',
       host: 'localhost',
       database: 'test',
-      entities: [Photo],
+      entities: [SalesPoint],
       synchronize: true,
     }),
-    PhotoModule,
+    SalesPointModule,
   ],
 })
 export class AppModule {}

@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Photo } from '../../src/photo/photo.entity';
-import { PhotoService } from '../../src/photo/photo.service';
+import { SalesPoint } from '../entity/sales-point.entity';
+import { SalesPointService } from './sales-point.service';
 
 describe('CatService', () => {
-  let service: PhotoService;
-  let repository: Repository<Photo>;
+  let service: SalesPointService;
+  let repository: Repository<SalesPoint>;
 
   const photosArray = [
     {
@@ -26,9 +26,9 @@ describe('CatService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PhotoService,
+        SalesPointService,
         {
-          provide: getRepositoryToken(Photo),
+          provide: getRepositoryToken(SalesPoint),
           useValue: {
             find: jest.fn().mockResolvedValue(photosArray),
           },
@@ -36,8 +36,8 @@ describe('CatService', () => {
       ],
     }).compile();
 
-    service = module.get<PhotoService>(PhotoService);
-    repository = module.get<Repository<Photo>>(getRepositoryToken(Photo));
+    service = module.get<SalesPointService>(SalesPointService);
+    repository = module.get<Repository<SalesPoint>>(getRepositoryToken(SalesPoint));
   });
 
   it('should be defined', () => {

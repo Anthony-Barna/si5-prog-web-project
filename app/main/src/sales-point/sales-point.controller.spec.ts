@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PhotoController } from '../../src/photo/photo.controller';
-import { PhotoService} from '../../src/photo/photo.service';
+import { SalesPointController } from './sales-point.controller';
+import { SalesPointService} from './sales-point.service';
 
 describe('Photo Controller', () => {
-  let controller: PhotoController;
-  let service: PhotoService;
+  let controller: SalesPointController;
+  let service: SalesPointService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [PhotoController],
+      controllers: [SalesPointController],
       providers: [
         {
-          provide: PhotoService,
+          provide: SalesPointService,
           useValue: {
             findAll: jest.fn().mockResolvedValue([
               {
@@ -37,8 +37,8 @@ describe('Photo Controller', () => {
       ],
     }).compile();
 
-    controller = module.get<PhotoController>(PhotoController);
-    service = module.get<PhotoService>(PhotoService);
+    controller = module.get<SalesPointController>(SalesPointController);
+    service = module.get<SalesPointService>(SalesPointService);
   });
 
   describe('findAll()', () => {
