@@ -10,11 +10,11 @@ import { Logger } from "@nestjs/common";
 export class SalesPointService {
   constructor(
     @InjectRepository(SalesPoint)
-    private readonly photoRepository: Repository<SalesPoint>
+    private readonly salesPointRepository: Repository<SalesPoint>
   ) {}
 
   async findAll(): Promise<SalesPoint[]> {
-    return this.photoRepository.find();
+    return this.salesPointRepository.find();
   }
 
   async createSalesPoints(salesPointsString: string): Promise<SalesPoint[]> {
@@ -28,7 +28,9 @@ export class SalesPointService {
     );
 
     for (const salesPoint of salesPoints) {
-      const persistedSalesPoint = await this.photoRepository.save(salesPoint);
+      const persistedSalesPoint = await this.salesPointRepository.save(
+        salesPoint
+      );
       persistedSalesPoints.push(persistedSalesPoint);
       Logger.log("Sales point created : n°" + persistedSalesPoint.id);
     }
