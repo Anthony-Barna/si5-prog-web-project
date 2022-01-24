@@ -28,9 +28,6 @@ export class SalesPoint {
   @Column()
   rupture: string;
 
-  @OneToMany((type) => Service, (service) => service.salesPoint, {
-    cascade: true,
-  })
   services: Service[];
 
   /*

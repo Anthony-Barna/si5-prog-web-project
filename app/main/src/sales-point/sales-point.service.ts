@@ -10,14 +10,24 @@ import { Logger } from "@nestjs/common";
 export class SalesPointService {
   constructor(
     @InjectRepository(SalesPoint)
-    private readonly salesPointRepository: Repository<SalesPoint>
+    private readonly salesPointRepository: Repository<SalesPoint>,
+    @InjectRepository(Service)
+    private readonly serviceRepository: Repository<Service>
   ) {}
 
   async findAll(): Promise<SalesPoint[]> {
-    return this.salesPointRepository.find();
+    let salesPoints: SalesPoint[] = await this.salesPointRepository.find();
+
+    for (const s of salesPoints) {
+      s.services = await this.serviceRepository.find({
+        where: { salesPointId: s.id },
+      });
+    }
+
+    return salesPoints;
   }
 
-  async createSalesPoints(salesPointsString: string): Promise<SalesPoint[]> {
+  async persistSalesPoints(salesPointsString: string): Promise<SalesPoint[]> {
     const parser = new XMLParser();
     const salesPointsObject = parser.parse(salesPointsString).pdv_liste.pdv;
     let salesPoints: SalesPoint[] = [];
@@ -31,6 +41,10 @@ export class SalesPointService {
       const persistedSalesPoint = await this.salesPointRepository.save(
         salesPoint
       );
+      for (let s of persistedSalesPoint.services) {
+        s.salesPointId = persistedSalesPoint.id;
+        s = await this.serviceRepository.save(s);
+      }
       persistedSalesPoints.push(persistedSalesPoint);
       Logger.log("Sales point created : n°" + persistedSalesPoint.id);
     }
