@@ -2,33 +2,24 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { SalesPoint } from "../entity/sales-point.entity";
-import { XMLParser } from "fast-xml-parser";
+import { parser } from "../util/xml-parser.util";
 import { Service } from "../entity/service.entity";
 import { Logger } from "@nestjs/common";
+import { Price } from "../entity/price.entity";
+import * as moment from "moment";
 
 @Injectable()
 export class SalesPointService {
   constructor(
     @InjectRepository(SalesPoint)
-    private readonly salesPointRepository: Repository<SalesPoint>,
-    @InjectRepository(Service)
-    private readonly serviceRepository: Repository<Service>
+    private readonly salesPointRepository: Repository<SalesPoint>
   ) {}
 
   async findAll(): Promise<SalesPoint[]> {
-    let salesPoints: SalesPoint[] = await this.salesPointRepository.find();
-
-    for (const s of salesPoints) {
-      s.services = await this.serviceRepository.find({
-        where: { salesPointId: s.id },
-      });
-    }
-
-    return salesPoints;
+    return this.salesPointRepository.find();
   }
 
   async persistSalesPoints(salesPointsString: string): Promise<SalesPoint[]> {
-    const parser = new XMLParser();
     const salesPointsObject = parser.parse(salesPointsString).pdv_liste.pdv;
     let salesPoints: SalesPoint[] = [];
     let persistedSalesPoints: SalesPoint[] = [];
@@ -41,10 +32,6 @@ export class SalesPointService {
       const persistedSalesPoint = await this.salesPointRepository.save(
         salesPoint
       );
-      for (let s of persistedSalesPoint.services) {
-        s.salesPointId = persistedSalesPoint.id;
-        s = await this.serviceRepository.save(s);
-      }
       persistedSalesPoints.push(persistedSalesPoint);
       Logger.log("Sales point created : n°" + persistedSalesPoint.id);
     }
@@ -60,6 +47,16 @@ export class SalesPointService {
     salesPoint.closing = salesPointObject.fermeture;
     salesPoint.rupture = salesPointObject.rupture;
 
+    this.createSalesPointServices(salesPointObject, salesPoint);
+    this.createSalesPointPrices(salesPointObject, salesPoint);
+
+    return salesPoint;
+  }
+
+  private createSalesPointServices(
+    salesPointObject: any,
+    salesPoint: SalesPoint
+  ): void {
     salesPoint.services = [];
 
     if (salesPointObject.services.service) {
@@ -72,7 +69,23 @@ export class SalesPointService {
         }
       );
     }
+  }
 
-    return salesPoint;
+  private createSalesPointPrices(
+    salesPointObject: any,
+    salesPoint: SalesPoint
+  ): void {
+    salesPoint.prices = [];
+
+    if (salesPointObject.prix) {
+      salesPointObject.prix.forEach((p) => {
+        let price = new Price();
+        price.id = p.id;
+        price.name = p.nom;
+        price.value = +p.valeur;
+        price.lastUpdateDate = moment(p.maj, "YYYY-MM-DD HH:mm:ss").toDate();
+        salesPoint.prices.push(price);
+      });
+    }
   }
 }

@@ -1,13 +1,7 @@
-import { Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
+import { Column, Entity } from "typeorm";
 
 @Entity()
 export class Service {
-  @ObjectIdColumn()
-  id: ObjectID;
-
-  @ObjectIdColumn()
-  salesPointId: ObjectID;
-
   @Column()
   name: string;
 }

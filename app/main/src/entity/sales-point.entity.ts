@@ -1,6 +1,7 @@
 import { Column, Entity, ObjectID, ObjectIdColumn, OneToMany } from "typeorm";
 import { ApiProperty } from "@nestjs/swagger";
 import { Service } from "./service.entity";
+import { Price } from "./price.entity";
 
 @Entity()
 export class SalesPoint {
@@ -28,9 +29,9 @@ export class SalesPoint {
   @Column()
   rupture: string;
 
+  @Column(() => Service)
   services: Service[];
 
-  /*
-  @OneToMany()
-  prices: Price;*/
+  @Column(() => Price)
+  prices: Price[];
 }
