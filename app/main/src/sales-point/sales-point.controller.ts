@@ -36,7 +36,7 @@ export class SalesPointController {
     }
 
     return this.photoService.persistSalesPoints(
-      Buffer.from(file.buffer).toString("utf-8")
+      Buffer.from(file.buffer).toString("latin1")
     );
   }
 }

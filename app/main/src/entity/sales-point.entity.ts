@@ -2,6 +2,9 @@ import { Column, Entity, ObjectID, ObjectIdColumn, OneToMany } from "typeorm";
 import { ApiProperty } from "@nestjs/swagger";
 import { Service } from "./service.entity";
 import { Price } from "./price.entity";
+import { Position } from "./position.entity";
+import { Address } from "./address.entity";
+import { Timetable } from "./timetable.entity";
 
 @Entity()
 export class SalesPoint {
@@ -9,28 +12,25 @@ export class SalesPoint {
   id: ObjectID;
 
   @Column()
-  @ApiProperty({
-    name: "address",
-    type: "string",
-    example: "'573 route d",
-    description: "The address of the sales-point",
-  })
-  address: string;
-
-  @Column()
-  city: string;
-
-  @Column()
-  opening: string;
-
-  @Column()
-  closing: string;
-
-  @Column()
   rupture: string;
+
+  @Column()
+  presence: string;
+
+  @Column()
+  hasAutomate: boolean;
+
+  @Column(() => Address)
+  address: Address;
+
+  @Column(() => Position)
+  position: Position;
 
   @Column(() => Service)
   services: Service[];
+
+  @Column(() => Timetable)
+  timetables: Timetable[];
 
   @Column(() => Price)
   prices: Price[];
