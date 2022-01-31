@@ -18,7 +18,13 @@ export class SalesPointService {
     private readonly salesPointRepository: Repository<SalesPoint>
   ) {}
 
-  async findAll(): Promise<SalesPoint[]> {
+  async findAll(
+    fuel: string,
+    price: number,
+    latitude: number,
+    longitude: number,
+    distance: number
+  ): Promise<SalesPoint[]> {
     return this.salesPointRepository.find();
   }
 
