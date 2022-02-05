@@ -23,9 +23,20 @@ export class SalesPointService {
     price: number,
     latitude: number,
     longitude: number,
-    distance: number
+    distance: number,
+    road: string,
+    limit: number
   ): Promise<SalesPoint[]> {
-    return this.salesPointRepository.find();
+    let where = {};
+
+    if (road) {
+      where["presence"] = road;
+    }
+
+    return this.salesPointRepository.find({
+      where: where,
+      take: limit ? Math.round(limit) : 0,
+    });
   }
 
   async persistSalesPoints(salesPointsString: string): Promise<SalesPoint[]> {

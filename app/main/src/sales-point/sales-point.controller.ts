@@ -45,11 +45,27 @@ export class SalesPointController {
     type: "number",
     required: false,
   })
+  @ApiParam({
+    name: "road",
+    description: "A to return highway stations, R to return standard stations",
+    type: "string",
+    required: false,
+  })
+  @ApiParam({
+    name: "limit",
+    description: "Number of maximum results returned",
+    type: "int",
+    required: false,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: "Ok",
     type: SalesPoint,
     isArray: true,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: "Invalid parameter(s)",
   })
   findAll(@Query() query): Promise<SalesPoint[]> {
     if (query.price && !query.fuel) {
@@ -70,22 +86,25 @@ export class SalesPointController {
       query.price,
       query.distance,
       query.latitude,
-      query.longitude
+      query.longitude,
+      query.road,
+      query.limit
     );
   }
 
   @Post()
   @UseInterceptors(FileInterceptor("file"))
+  @ApiParam({ name: "file", type: "file", required: true })
   @ApiOperation({ summary: "Upload sales points" })
-  @ApiResponse({ status: HttpStatus.OK, description: "Ok" })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "Ok",
+    type: SalesPoint,
+    isArray: true,
+  })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: "A file must be uploaded",
-  })
-  @ApiBody({
-    description: "Created sales points",
-    type: SalesPoint,
-    isArray: true,
   })
   upload(@UploadedFile() file: Express.Multer.File): Promise<SalesPoint[]> {
     if (!file) {
