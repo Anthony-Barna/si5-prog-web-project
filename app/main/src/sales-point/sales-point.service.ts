@@ -37,7 +37,7 @@ export class SalesPointService {
       where["position"] = {
         $near: {
           $geometry: { type: "Point", coordinates: [+longitude, +latitude] },
-          $maxDistance: distance,
+          $maxDistance: +distance,
         },
       };
     }
