@@ -5,9 +5,9 @@ import { ApiProperty } from "@nestjs/swagger";
 export class Position {
   @Column()
   @ApiProperty()
-  latitude: number;
+  longitude: number;
 
   @Column()
   @ApiProperty()
-  longitude: number;
+  latitude: number;
 }
