@@ -20,7 +20,6 @@ export default class Map extends React.Component {
         const mapStyle = {
             height: '100%',
         }
-        changePos()
         return (
             <>  
                 <div id="map" style={mapStyle}>
