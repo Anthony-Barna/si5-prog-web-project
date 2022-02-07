@@ -10,7 +10,7 @@ export default function Map() {
         <>
             <Typography>Bite</Typography>
             <Button onClick={() => {
-                navigate({ pathname: '/'})
+                navigate({ pathname: '/statistics'})
             } } >
                 Click
             </Button>

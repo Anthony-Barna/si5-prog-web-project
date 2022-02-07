@@ -12,6 +12,7 @@ export default function RouterFunction() {
     <BrowserRouter>
       <div>
         <Routes>
+          <Route path="/" element={<Map/>} />
           <Route path="/map" element={<Map />} />
           <Route path="/statistics" element={<Statistics />}>
           </Route>
