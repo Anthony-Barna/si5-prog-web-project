@@ -1,8 +1,10 @@
 import {
   Controller,
   Get,
+  HttpCode,
   HttpException,
   HttpStatus,
+  Logger,
   Post,
   Query,
   UploadedFile,
@@ -10,13 +12,7 @@ import {
 } from "@nestjs/common";
 import { SalesPointService } from "./sales-point.service";
 import { SalesPoint } from "../entity/sales-point.entity";
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-  ApiTags,
-} from "@nestjs/swagger";
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Express } from "express";
 import { FileInterceptor } from "@nestjs/platform-express";
 
@@ -84,35 +80,38 @@ export class SalesPointController {
     return this.salesPointService.findAll(
       query.fuel,
       query.price,
-      query.distance,
-      query.latitude,
       query.longitude,
+      query.latitude,
+      query.distance,
       query.road,
       query.limit
     );
   }
 
   @Post()
+  @HttpCode(202)
   @UseInterceptors(FileInterceptor("file"))
   @ApiParam({ name: "file", type: "file", required: true })
   @ApiOperation({ summary: "Upload sales points" })
   @ApiResponse({
-    status: HttpStatus.OK,
-    description: "Ok",
-    type: SalesPoint,
-    isArray: true,
+    status: HttpStatus.ACCEPTED,
+    description: "Request accepted",
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: "A file must be uploaded",
   })
-  upload(@UploadedFile() file: Express.Multer.File): Promise<SalesPoint[]> {
+  upload(@UploadedFile() file: Express.Multer.File): void {
     if (!file) {
       throw new HttpException("No file uploaded", HttpStatus.BAD_REQUEST);
     }
 
-    return this.salesPointService.persistSalesPoints(
-      Buffer.from(file.buffer).toString("latin1")
-    );
+    this.salesPointService
+      .persistSalesPoints(Buffer.from(file.buffer).toString("latin1"))
+      .then((c) =>
+        this.salesPointService
+          .indexPositions()
+          .then((r) => Logger.log("Positions indexed"))
+      );
   }
 }

@@ -1,28 +1,28 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { MongoRepository } from "typeorm";
 import { SalesPoint } from "../entity/sales-point.entity";
 import { parser } from "../util/xml-parser.util";
 import { Service } from "../entity/service.entity";
-import { Logger } from "@nestjs/common";
 import { Price } from "../entity/price.entity";
 import * as moment from "moment";
 import { Position } from "../entity/position.entity";
 import { Address } from "../entity/address.entity";
 import { Timetable } from "../entity/timetable.entity";
+import { FormatterUtil } from "../util/formatterUtil";
 
 @Injectable()
 export class SalesPointService {
   constructor(
     @InjectRepository(SalesPoint)
-    private readonly salesPointRepository: Repository<SalesPoint>
+    private readonly salesPointRepository: MongoRepository<SalesPoint>
   ) {}
 
   async findAll(
     fuel: string,
     price: number,
-    latitude: number,
     longitude: number,
+    latitude: number,
     distance: number,
     road: string,
     limit: number
@@ -33,16 +33,31 @@ export class SalesPointService {
       where["presence"] = road;
     }
 
+    if (distance) {
+      where["position"] = {
+        $near: {
+          $geometry: { type: "Point", coordinates: [+longitude, +latitude] },
+          $maxDistance: distance,
+        },
+      };
+    }
+
     return this.salesPointRepository.find({
       where: where,
       take: limit ? Math.round(limit) : 0,
     });
   }
 
-  async persistSalesPoints(salesPointsString: string): Promise<SalesPoint[]> {
+  // Must be called before sorting by position
+  async indexPositions(): Promise<void> {
+    await this.salesPointRepository.createCollectionIndex({
+      position: "2dsphere",
+    });
+  }
+
+  async persistSalesPoints(salesPointsString: string): Promise<void> {
     const salesPointsObject = parser.parse(salesPointsString).pdv_liste.pdv;
     let salesPoints: SalesPoint[] = [];
-    let persistedSalesPoints: SalesPoint[] = [];
 
     salesPointsObject.forEach((salesPointObject) =>
       salesPoints.push(this.createSalesPoint(salesPointObject))
@@ -52,11 +67,8 @@ export class SalesPointService {
       const persistedSalesPoint = await this.salesPointRepository.save(
         salesPoint
       );
-      persistedSalesPoints.push(persistedSalesPoint);
       Logger.log("Sales point created : n°" + persistedSalesPoint.id);
     }
-
-    return persistedSalesPoints;
   }
 
   private createSalesPoint(salesPointObject: any): SalesPoint {
@@ -90,8 +102,12 @@ export class SalesPointService {
     salesPoint: SalesPoint
   ): void {
     salesPoint.position = new Position();
-    salesPoint.position.latitude = +salesPointObject.latitude;
-    salesPoint.position.longitude = +salesPointObject.longitude;
+    salesPoint.position.coordinates.push(
+      FormatterUtil.formatLongitude(+salesPointObject.longitude)
+    );
+    salesPoint.position.coordinates.push(
+      FormatterUtil.formatLatitude(+salesPointObject.latitude)
+    );
   }
 
   private createSalesPointServices(

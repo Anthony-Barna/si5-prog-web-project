@@ -5,9 +5,18 @@ import { ApiProperty } from "@nestjs/swagger";
 export class Position {
   @Column()
   @ApiProperty()
-  longitude: number;
+  type: string;
 
   @Column()
-  @ApiProperty()
-  latitude: number;
+  @ApiProperty({
+    type: "number",
+    isArray: true,
+    example: "[longitude, latitude]",
+  })
+  coordinates: number[];
+
+  constructor() {
+    this.type = "Point";
+    this.coordinates = [];
+  }
 }
