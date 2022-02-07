@@ -9,7 +9,7 @@ import * as moment from "moment";
 import { Position } from "../entity/position.entity";
 import { Address } from "../entity/address.entity";
 import { Timetable } from "../entity/timetable.entity";
-import { FormatterUtil } from "../util/formatterUtil";
+import { FormatterUtil } from "../util/formatter.util";
 
 @Injectable()
 export class SalesPointService {
@@ -31,6 +31,14 @@ export class SalesPointService {
 
     if (road) {
       where["presence"] = road;
+    }
+
+    if (fuel) {
+      where["prices.name"] = fuel;
+    }
+
+    if (price) {
+      where["prices.value"] = { $lt: +price };
     }
 
     if (distance) {
