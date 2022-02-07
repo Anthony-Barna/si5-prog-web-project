@@ -79,6 +79,10 @@ export class SalesPointService {
     }
   }
 
+  async deleteAllSalesPoints(): Promise<void> {
+    await this.salesPointRepository.deleteMany({});
+  }
+
   private createSalesPoint(salesPointObject: any): SalesPoint {
     let salesPoint: SalesPoint = new SalesPoint();
     salesPoint.rupture = salesPointObject.rupture;

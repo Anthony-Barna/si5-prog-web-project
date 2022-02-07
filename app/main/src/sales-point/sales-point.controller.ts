@@ -107,11 +107,15 @@ export class SalesPointController {
     }
 
     this.salesPointService
-      .persistSalesPoints(Buffer.from(file.buffer).toString("latin1"))
-      .then((c) =>
+      .deleteAllSalesPoints()
+      .then(() =>
         this.salesPointService
-          .indexPositions()
-          .then((r) => Logger.log("Positions indexed"))
+          .persistSalesPoints(Buffer.from(file.buffer).toString("latin1"))
+          .then(() =>
+            this.salesPointService
+              .indexPositions()
+              .then(() => Logger.log("Positions indexed"))
+          )
       );
   }
 }
