@@ -2,7 +2,6 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { SalesPointModule } from "./sales-point/sales-point.module";
 import { SalesPoint } from "./entity/sales-point.entity";
-import { Service } from "./entity/service.entity";
 
 @Module({
   imports: [
@@ -10,7 +9,7 @@ import { Service } from "./entity/service.entity";
       type: "mongodb",
       host: "localhost",
       database: "test",
-      entities: [SalesPoint, Service],
+      entities: [SalesPoint],
       synchronize: true,
     }),
     SalesPointModule,
