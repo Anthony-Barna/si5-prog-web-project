@@ -1,23 +1,25 @@
 import React from "react";
 import Map from "../map/Map";
+import NotFound from "../notFound/NotFound";
+import Navbar from "../navbar/Navbar";
 import Statistics from "../statistics/Statistics";
 import {
   BrowserRouter,
   Routes,
   Route,
+  Navigate
 } from "react-router-dom";
 
 export default function RouterFunction() {
   return (
     <BrowserRouter>
-      <div>
+      <Navbar />
         <Routes>
-          <Route path="/" element={<Map/>} />
+          <Route path="/" element={<Navigate to="/map"/>} />
           <Route path="/map" element={<Map />} />
-          <Route path="/statistics" element={<Statistics />}>
-          </Route>
+          <Route path="/statistics" element={<Statistics />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
-      </div>
     </BrowserRouter>
   );
 }
