@@ -18,8 +18,25 @@ export class SalesPointService {
     private readonly salesPointRepository: Repository<SalesPoint>
   ) {}
 
-  async findAll(): Promise<SalesPoint[]> {
-    return this.salesPointRepository.find();
+  async findAll(
+    fuel: string,
+    price: number,
+    latitude: number,
+    longitude: number,
+    distance: number,
+    road: string,
+    limit: number
+  ): Promise<SalesPoint[]> {
+    let where = {};
+
+    if (road) {
+      where["presence"] = road;
+    }
+
+    return this.salesPointRepository.find({
+      where: where,
+      take: limit ? Math.round(limit) : 0,
+    });
   }
 
   async persistSalesPoints(salesPointsString: string): Promise<SalesPoint[]> {

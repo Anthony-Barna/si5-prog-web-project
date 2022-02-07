@@ -1,10 +1,13 @@
 import { Column, Entity } from "typeorm";
+import { ApiProperty } from "@nestjs/swagger";
 
 @Entity()
 export class Position {
   @Column()
-  latitude: number;
+  @ApiProperty()
+  longitude: number;
 
   @Column()
-  longitude: number;
+  @ApiProperty()
+  latitude: number;
 }
