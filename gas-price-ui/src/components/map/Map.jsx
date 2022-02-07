@@ -12,11 +12,15 @@ export default class Map extends React.Component {
         }
     }
 
+    changePos(){
+        this.setState({position: [0, 0]})
+    }
+
     render(){
         const mapStyle = {
             height: '100%',
         }
-        
+        changePos()
         return (
             <>  
                 <div id="map" style={mapStyle}>

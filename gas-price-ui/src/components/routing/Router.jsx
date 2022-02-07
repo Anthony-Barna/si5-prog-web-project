@@ -1,5 +1,6 @@
 import React from "react";
 import Map from "../map/Map";
+import { MapAccess } from "../../page/mapAccess/mapAccess";
 import Statistics from "../statistics/Statistics";
 import {
   BrowserRouter,
@@ -12,7 +13,7 @@ export default function RouterFunction() {
     <BrowserRouter>
       <div>
         <Routes>
-          <Route path="/" element={<Map/>} />
+          <Route path="/" element={<MapAccess/>} />
           <Route path="/map" element={<Map />} />
           <Route path="/statistics" element={<Statistics />}>
           </Route>
