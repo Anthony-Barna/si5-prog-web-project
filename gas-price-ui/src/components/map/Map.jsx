@@ -8,7 +8,8 @@ export default class Map extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            position: (props.position) ? props.position : [43.27, 5.40]
+            position: (props.position) ? props.position : [43.27, 5.40],
+            markers: props.markers
         }
     }
 
@@ -19,6 +20,10 @@ export default class Map extends React.Component {
     render(){
         const mapStyle = {
             height: '100%',
+        }
+        let markersRender = []
+        for(let marker of this.state.markers){
+            markersRender.push(marker.render())
         }
         return (
             <>  
@@ -33,6 +38,7 @@ export default class Map extends React.Component {
                                 Your position
                             </Popup>
                         </Marker>
+                        {markersRender}
                     </MapContainer>
                 </div>
             </>
