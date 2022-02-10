@@ -44,14 +44,6 @@ export default function Map() {
             })
     })
 
-    // JE SAIS PAS ENCORE FAIRE DE TESTS AVEC REACT ALORS LAISSEZ MOI ESSAYER
-    const listOfGasStationNoArg = getListOfGasStation();
-    const listOfGasStationLim = getListOfGasStation(5);
-    const listOfGasStationRoad = getListOfGasStation(5, "Toulon");
-    const listOfGasStationDistance = getListOfGasStation(5, "Toulon", 3);
-    const listOfGasStationPrice = getListOfGasStation(5, null, null, 1.5);
-    const listOfGasStationFuel = getListOfGasStation(5, null, null, null, "SP98");
-
     return (
         <>
             <Typography>Bite</Typography>
@@ -59,6 +51,17 @@ export default function Map() {
                 navigate({ pathname: '/statistics'})
             } } >
                 Click
+            </Button>
+            <Button onClick={() => {
+                // JE SAIS PAS ENCORE FAIRE DE TESTS AVEC REACT ALORS LAISSEZ MOI ESSAYER
+                const listOfGasStationNoArg = getListOfGasStation();
+                const listOfGasStationLim = getListOfGasStation(5);
+                const listOfGasStationRoad = getListOfGasStation(5, "RD 93 GRANDE RUE");
+                const listOfGasStationDistance = getListOfGasStation(5, "RD 93 GRANDE RUE", 3);
+                const listOfGasStationPrice = getListOfGasStation(5, null, null, 1.5);
+                const listOfGasStationFuel = getListOfGasStation(5, null, null, null, "SP98");
+            } } >
+                Test request
             </Button>
         </>
     )
