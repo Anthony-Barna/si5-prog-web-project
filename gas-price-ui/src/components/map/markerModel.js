@@ -6,8 +6,12 @@ export class MarkerModel{
     long;
     text;
 
-    render(){
-        return <Marker position={[this.lat, this.long]}><Popup>{this.text}</Popup></Marker>
+    render(icon){
+        if(icon === undefined){
+            return <Marker position={[this.lat, this.long]}><Popup>{this.text}</Popup></Marker>
+        }else{
+            return <Marker position={[this.lat, this.long]} icon={icon}><Popup>{this.text}</Popup></Marker>
+        }
     }
 
     constructor(lat, long, text){

@@ -1,5 +1,4 @@
 import React from "react";
-import Map from "../map/Map";
 import { MapAccess } from "../../page/mapAccess/mapAccess";
 import NotFound from "../notFound/NotFound";
 import Navbar from "../navbar/Navbar";
