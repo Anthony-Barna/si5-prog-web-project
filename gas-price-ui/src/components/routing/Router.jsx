@@ -16,8 +16,8 @@ export default function RouterFunction() {
     <BrowserRouter>
       <Navbar />
         <Routes>
-          <Route path="/" element={<MapAccess/>} />
-          <Route path="/map" element={<Map />} />
+          <Route path="/" element={<Navigate to="/map"/>} />
+          <Route path="/map" element={<MapAccess />} />
           <Route path="/statistics" element={<Statistics />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
