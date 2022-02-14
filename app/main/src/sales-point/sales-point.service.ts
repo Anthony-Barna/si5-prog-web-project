@@ -1,17 +1,18 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { MongoRepository } from "typeorm";
-import { SalesPoint } from "../entity/sales-point.entity";
-import { parser } from "../util/xml-parser.util";
-import { Service } from "../entity/service.entity";
-import { Price } from "../entity/price.entity";
+import {Logger} from "@nestjs/common";
+import {InjectRepository} from "@nestjs/typeorm";
+import {MongoRepository} from "typeorm";
+import {SalesPoint} from "../entity/sales-point.entity";
+import {parser} from "../util/xml-parser.util";
+import {Service} from "../entity/service.entity";
+import {Price} from "../entity/price.entity";
 import * as moment from "moment";
-import { Position } from "../entity/position.entity";
-import { Address } from "../entity/address.entity";
-import { Timetable } from "../entity/timetable.entity";
-import { FormatterUtil } from "../util/formatter.util";
+import {Position} from "../entity/position.entity";
+import {Address} from "../entity/address.entity";
+import {Timetable} from "../entity/timetable.entity";
+import {FormatterUtil} from "../util/formatter.util";
+import {UnzipUtil} from "../util/unzip-util";
+import {Cron} from "@nestjs/schedule";
 
-@Injectable()
 export class SalesPointService {
   constructor(
     @InjectRepository(SalesPoint)
@@ -72,11 +73,15 @@ export class SalesPointService {
     );
 
     for (const salesPoint of salesPoints) {
-      const persistedSalesPoint = await this.salesPointRepository.save(
-        salesPoint
-      );
+      const persistedSalesPoint = await this.salesPointRepository.save(salesPoint);
       Logger.log("Sales point created : n°" + persistedSalesPoint.id);
     }
+  }
+
+  @Cron('0 30 3 * * *')
+  async persistDistantSalesPoints(): Promise<void> {
+    const unzipUtil: UnzipUtil = new UnzipUtil();
+    await this.persistSalesPoints(await unzipUtil.getUncompressedGasPriceString());
   }
 
   async deleteAllSalesPoints(): Promise<void> {
@@ -87,8 +92,7 @@ export class SalesPointService {
     let salesPoint: SalesPoint = new SalesPoint();
     salesPoint.rupture = salesPointObject.rupture;
     salesPoint.presence = salesPointObject.pop;
-    salesPoint.hasAutomate =
-      salesPointObject.horaires?.["automate-24-24"] === "1";
+    salesPoint.hasAutomate = salesPointObject.horaires?.["automate-24-24"] === "1";
 
     this.createSalesPointAddress(salesPointObject, salesPoint);
     this.createSalesPointPosition(salesPointObject, salesPoint);
@@ -99,51 +103,34 @@ export class SalesPointService {
     return salesPoint;
   }
 
-  private createSalesPointAddress(
-    salesPointObject: any,
-    salesPoint: SalesPoint
-  ): void {
+  private createSalesPointAddress(salesPointObject: any, salesPoint: SalesPoint): void {
     salesPoint.address = new Address();
     salesPoint.address.street = salesPointObject.adresse;
     salesPoint.address.city = salesPointObject.ville;
     salesPoint.address.postalCode = salesPointObject.cp;
   }
 
-  private createSalesPointPosition(
-    salesPointObject: any,
-    salesPoint: SalesPoint
-  ): void {
+  private createSalesPointPosition(salesPointObject: any, salesPoint: SalesPoint): void {
     salesPoint.position = new Position();
     salesPoint.position.coordinates.push(
       FormatterUtil.formatLongitude(+salesPointObject.longitude)
     );
-    salesPoint.position.coordinates.push(
-      FormatterUtil.formatLatitude(+salesPointObject.latitude)
-    );
+    salesPoint.position.coordinates.push(FormatterUtil.formatLatitude(+salesPointObject.latitude));
   }
 
-  private createSalesPointServices(
-    salesPointObject: any,
-    salesPoint: SalesPoint
-  ): void {
+  private createSalesPointServices(salesPointObject: any, salesPoint: SalesPoint): void {
     salesPoint.services = [];
 
     if (salesPointObject.services.service) {
-      Array.prototype.forEach.call(
-        salesPointObject.services.service,
-        (serviceName) => {
-          let service = new Service();
-          service.name = serviceName;
-          salesPoint.services.push(service);
-        }
-      );
+      Array.prototype.forEach.call(salesPointObject.services.service, (serviceName) => {
+        let service = new Service();
+        service.name = serviceName;
+        salesPoint.services.push(service);
+      });
     }
   }
 
-  private createSalesPointTimetables(
-    salesPointObject: any,
-    salesPoint: SalesPoint
-  ): void {
+  private createSalesPointTimetables(salesPointObject: any, salesPoint: SalesPoint): void {
     salesPoint.timetables = [];
 
     if (salesPointObject.horaires?.jour) {
@@ -157,10 +144,7 @@ export class SalesPointService {
     }
   }
 
-  private createSalesPointPrices(
-    salesPointObject: any,
-    salesPoint: SalesPoint
-  ): void {
+  private createSalesPointPrices(salesPointObject: any, salesPoint: SalesPoint): void {
     salesPoint.prices = [];
 
     if (salesPointObject.prix) {
@@ -178,10 +162,7 @@ export class SalesPointService {
         price.id = salesPointObject.prix.id;
         price.name = salesPointObject.prix.nom;
         price.value = +salesPointObject.prix.valeur;
-        price.lastUpdateDate = moment(
-          salesPointObject.prix.maj,
-          "YYYY-MM-DD HH:mm:ss"
-        ).toDate();
+        price.lastUpdateDate = moment(salesPointObject.prix.maj, "YYYY-MM-DD HH:mm:ss").toDate();
         salesPoint.prices.push(price);
       }
     }

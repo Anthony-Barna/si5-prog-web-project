@@ -182,3 +182,5 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 package-lock.json
 /package-lock.json
+
+app/main/data
