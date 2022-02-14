@@ -1,6 +1,6 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
-import {MongoRepository} from "typeorm";
+import {AggregationCursor, MongoRepository} from "typeorm";
 import {Statistic} from "../entity/statistic.entity";
 import {SalesPoint} from "../entity/sales-point.entity";
 import {Cron} from "@nestjs/schedule";
@@ -21,6 +21,23 @@ export class StatisticService {
 
     @Cron('0 30 3 * * *')
     public async updateDepartmentalStatistics(): Promise<void> {
+        await this.deleteAllStatistics();
+        Logger.log("Old statistics deleted");
 
+        // Creating statistics by metropolitan departments
+        for(let departmentNumber: number = 1; departmentNumber<=1; departmentNumber++) {
+            let output;
+            let aggregate: AggregationCursor<SalesPoint> = await this.salesPointRepository.aggregate(
+                [ { $group: { _id: "$address.postalCode" } }]
+            );
+            console.log(aggregate);
+            Logger.log("Statistics created for department " + departmentNumber + " created");
+        }
+
+        Logger.log("New statistics created");
+    }
+
+    async deleteAllStatistics(): Promise<void> {
+        await this.statisticRepository.deleteMany({});
     }
 }

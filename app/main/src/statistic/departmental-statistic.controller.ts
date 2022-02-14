@@ -25,8 +25,8 @@ export class DepartmentalStatisticController {
     @HttpCode(200)
     @ApiOperation({ summary: "Update departmental statistics" })
     @ApiResponse({
-        status: HttpStatus.ACCEPTED,
-        description: "Request accepted",
+        status: HttpStatus.OK,
+        description: "Statistics updated",
     })
     updateDepartmentalStatistics(): void {
         this.statisticService.updateDepartmentalStatistics().then(r => Logger.log("Departmental statistics updated"));
