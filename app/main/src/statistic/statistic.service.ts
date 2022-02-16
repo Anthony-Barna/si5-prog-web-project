@@ -27,7 +27,7 @@ export class StatisticService {
         // Creating statistics by metropolitan departments
         for(let departmentNumber: number = 1; departmentNumber<=1; departmentNumber++) {
             let departmentString: string  = departmentNumber < 10 ? "0" + departmentNumber : "" + departmentNumber;
-            let aggregate: AggregationCursor<SalesPoint> = await this.salesPointRepository.aggregate(
+            let aggregate: AggregationCursor<SalesPoint> = await this.salesPointRepository.aggregateEntity(
                 [{
                     $match:
                             { $expr:
@@ -39,7 +39,8 @@ export class StatisticService {
                     {
                         $unwind: "$prices"
                     },
-                    {$group:
+                    {
+                        $group:
                             {
                                 _id: "$prices.name",
                                 averagePrice:
@@ -47,7 +48,14 @@ export class StatisticService {
                                         $avg: "$prices.value"
                                     }
                             }
-                    }]
+                    },
+                    {
+                        $sort:
+                            {
+                                "prices.name": -1
+                            }
+                    }
+                ]
             );
             console.log(aggregate);
             Logger.log("Statistics created for department " + departmentNumber + " created");
