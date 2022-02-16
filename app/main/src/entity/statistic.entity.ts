@@ -14,4 +14,8 @@ export class Statistic {
   @Column(() => Price)
   @ApiProperty({ type: Price, isArray: true, description: "Average price for a fuel" })
   prices: Price[];
+
+  constructor() {
+    this.prices = [];
+  }
 }

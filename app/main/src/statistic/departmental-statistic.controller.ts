@@ -22,13 +22,13 @@ export class DepartmentalStatisticController {
     }
 
     @Put()
-    @HttpCode(200)
-    @ApiOperation({ summary: "Update departmental statistics" })
+    @HttpCode(204)
+    @ApiOperation({summary: "Update departmental statistics"})
     @ApiResponse({
-        status: HttpStatus.OK,
+        status: HttpStatus.ACCEPTED,
         description: "Statistics updated",
     })
-    updateDepartmentalStatistics(): void {
-        this.statisticService.updateDepartmentalStatistics().then(r => Logger.log("Departmental statistics updated"));
+    async updateDepartmentalStatistics(): Promise<void> {
+        await this.statisticService.updateDepartmentalStatistics().then(r => Logger.log("Departmental statistics updated"));
     }
 }
