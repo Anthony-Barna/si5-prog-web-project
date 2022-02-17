@@ -3,7 +3,6 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {AggregationCursor, MongoRepository} from "typeorm";
 import {Statistic} from "../entity/statistic.entity";
 import {SalesPoint} from "../entity/sales-point.entity";
-import {Cron} from "@nestjs/schedule";
 import {Price} from "../entity/price.entity";
 
 @Injectable()
@@ -24,7 +23,6 @@ export class StatisticService {
         });
     }
 
-    @Cron('0 30 3 * * *')
     public async updateDepartmentalStatistics(): Promise<void> {
         await this.deleteAllStatistics();
         Logger.log("Old statistics deleted");
