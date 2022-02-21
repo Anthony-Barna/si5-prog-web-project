@@ -10,11 +10,12 @@ import {
   UploadedFile,
   UseInterceptors,
 } from "@nestjs/common";
-import { SalesPointService } from "./sales-point.service";
-import { SalesPoint } from "../entity/sales-point.entity";
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { Express } from "express";
-import { FileInterceptor } from "@nestjs/platform-express";
+import {SalesPointService} from "./sales-point.service";
+import {SalesPoint} from "../entity/sales-point.entity";
+import {ApiOperation, ApiParam, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {Express} from "express";
+import {FileInterceptor} from "@nestjs/platform-express";
+import {StatisticService} from "../statistic/statistic.service";
 
 @ApiTags("/api/sales-points")
 @Controller("/api/sales-points")
@@ -22,7 +23,8 @@ export class SalesPointController {
   private readonly LOCAL: string = "local";
   private readonly REMOTE: string = "remote";
 
-  constructor(private readonly salesPointService: SalesPointService) {}
+  constructor(private readonly salesPointService: SalesPointService,
+              private readonly statisticsService: StatisticService) {}
 
   @Get()
   @ApiOperation({ summary: "Find sales points by various filters" })
@@ -35,6 +37,18 @@ export class SalesPointController {
   @ApiParam({
     name: "price",
     description: "fuel price",
+    type: "number",
+    required: false,
+  })
+  @ApiParam({
+    name: "longitude",
+    description: "longitude",
+    type: "number",
+    required: false,
+  })
+  @ApiParam({
+    name: "latitude",
+    description: "latitude",
     type: "number",
     required: false,
   })
@@ -134,7 +148,10 @@ export class SalesPointController {
         }
       })
       .then(() =>
-        this.salesPointService.indexPositions().then(() => Logger.log("Positions indexed"))
+      {
+        this.salesPointService.indexPositions().then(() => Logger.log("Positions indexed"));
+        this.statisticsService.updateDepartmentalStatistics().then(() => Logger.log("Departmental statistics updated"));
+      }
       );
   }
 }
