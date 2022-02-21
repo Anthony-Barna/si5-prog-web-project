@@ -10,4 +10,11 @@ $ npm start
 ```
 
 ## You can see the api documentation on :
-localhost:8080/api
+```text
+GET localhost:8080/api
+```
+
+## How to populate backend remotely :
+```text
+POST localhost:8080/api/sales-points?method=remote
+```
