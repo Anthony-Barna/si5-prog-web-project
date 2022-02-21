@@ -3,14 +3,14 @@ import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {StatisticService} from "./statistic.service";
 import {Statistic} from "../entity/statistic/statistic.entity";
 
-@ApiTags("/api/departmental-statistics")
-@Controller('/api/departmental-statistics')
-export class DepartmentalStatisticController {
+@Controller('api/national-statistics')
+@ApiTags('api/national-statistics')
+export class NationalStatisticController {
 
     constructor(private readonly statisticService: StatisticService) {}
 
     @Get()
-    @ApiOperation({ summary: "Return fuel price statistics by french department" })
+    @ApiOperation({ summary: "Return France fuel price statistics" })
     @ApiResponse({
         status: HttpStatus.OK,
         description: "Ok",
@@ -18,17 +18,17 @@ export class DepartmentalStatisticController {
         isArray: true,
     })
     findAll(): Promise<Statistic[]> {
-        return this.statisticService.findAll(Statistic.DEPARTMENTAL_TYPE);
+        return this.statisticService.findAll(Statistic.NATIONAL_TYPE);
     }
 
     @Put()
     @HttpCode(204)
-    @ApiOperation({summary: "Update departmental fuel price statistics"})
+    @ApiOperation({summary: "Update national fuel price statistics"})
     @ApiResponse({
         status: HttpStatus.NO_CONTENT,
         description: "Statistics updated",
     })
     async updateDepartmentalStatistics(): Promise<void> {
-        await this.statisticService.updateDepartmentalStatistics().then(r => Logger.log("Departmental statistics updated"));
+        await this.statisticService.updateNationalStatistics().then(r => Logger.log("National statistics updated"));
     }
 }

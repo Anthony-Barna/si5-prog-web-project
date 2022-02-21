@@ -1,9 +1,12 @@
 import {Injectable, Logger} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {AggregationCursor, MongoRepository} from "typeorm";
-import {Statistic} from "../entity/statistic.entity";
+import {Statistic} from "../entity/statistic/statistic.entity";
 import {SalesPoint} from "../entity/sales-point.entity";
 import {Price} from "../entity/price.entity";
+import {DepartmentalStatistic} from "../entity/statistic/departemental-statistic.entity";
+import {NationalStatistic} from "../entity/statistic/national-statistic.entity";
+import {RegionalStatistic} from "../entity/statistic/regional-statistic.entity";
 
 @Injectable()
 export class StatisticService {
@@ -15,65 +18,71 @@ export class StatisticService {
         private readonly salesPointRepository: MongoRepository<SalesPoint>
     ) {}
 
-    public async findAll(): Promise<Statistic[]> {
+    public async findAll(type: string): Promise<Statistic[]> {
         return this.statisticRepository.find({
+            where: {
+                type: type
+            },
             order: {
-                departmentCode: "ASC"
+                code: "ASC"
             }
         });
     }
 
-    public async updateDepartmentalStatistics(): Promise<void> {
-        await this.deleteAllStatistics();
-        Logger.log("Old statistics deleted");
+    public async updateNationalStatistics(): Promise<void> {
+        await this.deleteAllStatistics(Statistic.NATIONAL_TYPE);
+        Logger.log("Old national statistics deleted");
 
+        let nationalStatistics: Statistic = new NationalStatistic();
+
+        await this
+            .buildAggregationPipeline(".*")
+            .toArray()
+            .then(async results => {
+                results.forEach(result => nationalStatistics.prices.push(this.buildPrice(result)));
+                await this.statisticRepository.save(nationalStatistics);
+            });
+        Logger.log("National statistics created");
+    }
+
+    public async updateRegionalStatistics(): Promise<void> {
+        await this.deleteAllStatistics(Statistic.REGIONAL_TYPE);
+        Logger.log("Old regional statistics deleted");
+
+        // Creating statistics by regions
+        for (const regionInfo of this.getRegionsInfos()) {
+
+            let regionalStatistic: Statistic = new RegionalStatistic();
+            regionalStatistic.code = regionInfo.code;
+
+            await this
+                .buildAggregationPipeline(regionInfo.regex)
+                .toArray()
+                .then(async results => {
+                    results.forEach(result => regionalStatistic.prices.push(this.buildPrice(result)));
+                    await this.statisticRepository.save(regionalStatistic);
+                    console.dir(regionalStatistic);
+                });
+            Logger.log("Statistics created for region " + regionInfo.code + " created");
+        }
+    }
+
+    public async updateDepartmentalStatistics(): Promise<void> {
+        await this.deleteAllStatistics(Statistic.DEPARTMENTAL_TYPE);
+        Logger.log("Old departmental statistics deleted");
 
         // Creating statistics by metropolitan departments
         for(let departmentCode: number = 1; departmentCode<=95; departmentCode++) {
             let departmentString: string = departmentCode < 10 ? "0" + departmentCode : "" + departmentCode;
 
-            let departmentalStatistic: Statistic = new Statistic();
-            departmentalStatistic.departmentCode = departmentString;
+            let departmentalStatistic: Statistic = new DepartmentalStatistic();
+            departmentalStatistic.code = departmentString;
 
-            let aggregate: AggregationCursor<SalesPoint> = this.salesPointRepository.aggregateEntity(
-                [{
-                    $match: {
-                        $expr: {
-                            $regexMatch: {
-                                input: "$address.postalCode", regex: "^" + departmentString
-                            }
-                        }
-                    }
-                },
-                    {
-                        $unwind: "$prices"
-                    },
-                    {
-                        $group: {
-                            _id: "$prices.name",
-                            // Presence is used to host the average price for a given fuel
-                            presence: {
-                                $avg: "$prices.value"
-                            }
-                        }
-                    },
-                    {
-                        $sort: {
-                            "prices.name": -1
-                        }
-                    }
-                ]
-            )
-            await aggregate
+            await this
+                .buildAggregationPipeline("^" + departmentString)
                 .toArray()
                 .then(async results => {
-                    results.forEach(result => {
-                        let price: Price = new Price();
-                        price.name = result.id.toString();
-                        price.value = +result.presence;
-                        price.lastUpdateDate = new Date();
-                        departmentalStatistic.prices.push(price);
-                    });
+                    results.forEach(result => departmentalStatistic.prices.push(this.buildPrice(result)));
                     await this.statisticRepository.save(departmentalStatistic);
                 });
             Logger.log("Statistics created for department " + departmentCode + " created");
@@ -82,7 +91,129 @@ export class StatisticService {
         Logger.log("New statistics created");
     }
 
-    async deleteAllStatistics(): Promise<void> {
-        await this.statisticRepository.deleteMany({});
+    private buildAggregationPipeline(regex: string): AggregationCursor<SalesPoint>{
+        return this.salesPointRepository.aggregateEntity(
+            [{
+                $match: {
+                    $expr: {
+                        $regexMatch: {
+                            input: "$address.postalCode", regex: regex
+                            }
+                        }
+                    }
+                },
+                {
+                    $unwind: "$prices"
+                },
+                {
+                    $group: {
+                        _id: "$prices.name",
+                        // Presence is used to host the average price for a given fuel
+                        presence: {
+                            $avg: "$prices.value"
+                        }
+                    }
+                },
+                {
+                    $sort: {
+                        "prices.name": -1
+                }
+                }
+            ]
+        );
+    }
+
+    async deleteAllStatistics(type: string): Promise<void> {
+        await this.statisticRepository.deleteMany({
+            type: type
+        });
+    }
+
+    private buildPrice(result: any): Price {
+        let price: Price = new Price();
+        price.name = result.id.toString();
+        price.value = +result.presence;
+        price.lastUpdateDate = new Date();
+        return  price;
+    }
+
+
+    // Grouping departments in regions, naming them
+    private getRegionsInfos(): any[] {
+        let infos = [];
+
+        // Auvergne-Rhône-Alpes
+        infos.push({
+            regex: "^(01|03|07|15|26|38|42|43|63|69|73|74)",
+            code: "Auvergne-Rhône-Alpes"
+        });
+
+        // Bourgogne-Franche-Comté
+        infos.push({
+            regex: "^(21|25|39|58|70|71|89|90)",
+            code: "Bourgogne-Franche-Comté"
+        });
+
+        // Bretagneaé
+        infos.push({
+            regex: "^(22|29|35|56)",
+            code: "Bretagne"
+        });
+
+        // Centre-Val de Loire
+        infos.push({
+            regex: "^(18|28|36|37|41|45)",
+            code: "Centre-Val de Loire"
+        });
+
+        // Grand Est
+        infos.push({
+            regex: "^(08|10|51|52|54|55|57|67|68|88)",
+            code: "Grand Est"
+        });
+
+        // Hauts de France
+        infos.push({
+            regex: "^(02|59|60|62|80)",
+            code: "Hauts de France"
+        });
+
+        // Île-de-France
+        infos.push({
+            regex: "^(75|77|78|91|92|93|94|95)",
+            code: "Île-de-France"
+        });
+
+        // Normandie
+        infos.push({
+            regex: "(^14|27|50|61|76)",
+            code: "Normandie"
+        });
+
+        // Nouvelle-Aquitaine
+        infos.push({
+            regex: "^(16|17|19|23|24|33|40|47|64|79|86|87)",
+            code: "Nouvelle-Aquitaine"
+        });
+
+        // Occitanie
+        infos.push({
+            regex: "^(09|11|12|30|31|32|34|46|48|65|66|81|82)",
+            code: "Occitanie"
+        });
+
+        // Pays de la Loire
+        infos.push({
+            regex: "^(44|49|53|72|85)",
+            code: "Pays de la Loire"
+        });
+
+        // Provence Alpes Côte d'Azur
+        infos.push({
+            regex: "^(04|05|06|13|83|84)",
+            code: "Provence Alpes Côte d'Azur"
+        });
+
+        return infos;
     }
 }
