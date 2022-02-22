@@ -1,5 +1,5 @@
-import { Column, Entity } from "typeorm";
-import { ApiProperty } from "@nestjs/swagger";
+import {Column, Entity} from "typeorm";
+import {ApiProperty} from "@nestjs/swagger";
 
 @Entity()
 export class Service {

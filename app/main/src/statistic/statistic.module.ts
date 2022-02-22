@@ -1,13 +1,15 @@
 import {Module} from '@nestjs/common';
 import {StatisticService} from './statistic.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {Statistic} from "../entity/statistic.entity";
+import {Statistic} from "../entity/statistic/statistic.entity";
 import {DepartmentalStatisticController} from "./departmental-statistic.controller";
 import {SalesPoint} from "../entity/sales-point.entity";
+import {RegionalStatisticController} from './regional-statistic.controller';
+import {NationalStatisticController} from './national-statistic.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Statistic, SalesPoint])],
   providers: [StatisticService],
-  controllers: [DepartmentalStatisticController]
+  controllers: [DepartmentalStatisticController, RegionalStatisticController, NationalStatisticController]
 })
 export class StatisticModule {}
