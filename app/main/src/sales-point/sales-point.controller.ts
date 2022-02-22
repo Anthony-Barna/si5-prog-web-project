@@ -151,6 +151,8 @@ export class SalesPointController {
       {
         this.salesPointService.indexPositions().then(() => Logger.log("Positions indexed"));
         this.statisticsService.updateDepartmentalStatistics().then(() => Logger.log("Departmental statistics updated"));
+        this.statisticsService.updateRegionalStatistics().then(() => Logger.log("Regional statistics updated"));
+        this.statisticsService.updateNationalStatistics().then(() => Logger.log("National statistics updated"));
       }
       );
   }

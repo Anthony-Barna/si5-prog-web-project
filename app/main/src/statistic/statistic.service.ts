@@ -61,7 +61,6 @@ export class StatisticService {
                 .then(async results => {
                     results.forEach(result => regionalStatistic.prices.push(this.buildPrice(result)));
                     await this.statisticRepository.save(regionalStatistic);
-                    console.dir(regionalStatistic);
                 });
             Logger.log("Statistics created for region " + regionInfo.code + " created");
         }
@@ -145,73 +144,79 @@ export class StatisticService {
         // Auvergne-Rhône-Alpes
         infos.push({
             regex: "^(01|03|07|15|26|38|42|43|63|69|73|74)",
-            code: "Auvergne-Rhône-Alpes"
+            code: "84"
         });
 
         // Bourgogne-Franche-Comté
         infos.push({
             regex: "^(21|25|39|58|70|71|89|90)",
-            code: "Bourgogne-Franche-Comté"
+            code: "27"
         });
 
-        // Bretagneaé
+        // Bretagne
         infos.push({
             regex: "^(22|29|35|56)",
-            code: "Bretagne"
+            code: "53"
         });
 
         // Centre-Val de Loire
         infos.push({
             regex: "^(18|28|36|37|41|45)",
-            code: "Centre-Val de Loire"
+            code: "24"
+        });
+
+        // Corse
+        infos.push({
+            regex: "^20",
+            code: "94"
         });
 
         // Grand Est
         infos.push({
             regex: "^(08|10|51|52|54|55|57|67|68|88)",
-            code: "Grand Est"
+            code: "44"
         });
 
         // Hauts de France
         infos.push({
             regex: "^(02|59|60|62|80)",
-            code: "Hauts de France"
+            code: "32"
         });
 
         // Île-de-France
         infos.push({
             regex: "^(75|77|78|91|92|93|94|95)",
-            code: "Île-de-France"
+            code: "11"
         });
 
         // Normandie
         infos.push({
             regex: "(^14|27|50|61|76)",
-            code: "Normandie"
+            code: "28"
         });
 
         // Nouvelle-Aquitaine
         infos.push({
             regex: "^(16|17|19|23|24|33|40|47|64|79|86|87)",
-            code: "Nouvelle-Aquitaine"
+            code: "75"
         });
 
         // Occitanie
         infos.push({
             regex: "^(09|11|12|30|31|32|34|46|48|65|66|81|82)",
-            code: "Occitanie"
+            code: "76"
         });
 
         // Pays de la Loire
         infos.push({
             regex: "^(44|49|53|72|85)",
-            code: "Pays de la Loire"
+            code: "52"
         });
 
         // Provence Alpes Côte d'Azur
         infos.push({
             regex: "^(04|05|06|13|83|84)",
-            code: "Provence Alpes Côte d'Azur"
+            code: "93"
         });
 
         return infos;
