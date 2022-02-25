@@ -10,7 +10,7 @@ export class User {
 
   @ApiProperty()
   @Column()
-  email: number;
+  email: string;
 
   @ApiProperty()
   @Exclude()
@@ -19,9 +19,9 @@ export class User {
 
   @ApiProperty()
   @Column()
-  firstName: string;
+  firstname: string;
 
   @ApiProperty()
   @Column()
-  lastName: string;
+  lastname: string;
 }
