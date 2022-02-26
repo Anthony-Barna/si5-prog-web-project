@@ -8,17 +8,20 @@ import {
   Post,
   Query,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import {SalesPointService} from "./sales-point.service";
-import {SalesPoint} from "../entity/sales-point.entity";
+import {SalesPoint} from "../model/entity/sales-point.entity";
 import {ApiOperation, ApiParam, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {Express} from "express";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {StatisticService} from "../statistic/statistic.service";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 
 @ApiTags("/api/sales-points")
 @Controller("/api/sales-points")
+@UseGuards(JwtAuthGuard)
 export class SalesPointController {
   private readonly LOCAL: string = "local";
   private readonly REMOTE: string = "remote";

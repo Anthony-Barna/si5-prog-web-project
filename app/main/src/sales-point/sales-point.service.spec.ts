@@ -1,8 +1,8 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { SalesPoint } from "../entity/sales-point.entity";
-import { SalesPointService } from "./sales-point.service";
+import {Test, TestingModule} from "@nestjs/testing";
+import {getRepositoryToken} from "@nestjs/typeorm";
+import {Repository} from "typeorm";
+import {SalesPoint} from "../model/entity/sales-point.entity";
+import {SalesPointService} from "./sales-point.service";
 
 describe("CatService", () => {
   let service: SalesPointService;

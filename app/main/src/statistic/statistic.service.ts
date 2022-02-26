@@ -1,12 +1,12 @@
 import {Injectable, Logger} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {AggregationCursor, MongoRepository} from "typeorm";
-import {Statistic} from "../entity/statistic/statistic.entity";
-import {SalesPoint} from "../entity/sales-point.entity";
-import {Price} from "../entity/price.entity";
-import {DepartmentalStatistic} from "../entity/statistic/departemental-statistic.entity";
-import {NationalStatistic} from "../entity/statistic/national-statistic.entity";
-import {RegionalStatistic} from "../entity/statistic/regional-statistic.entity";
+import {Statistic} from "../model/entity/statistic/statistic.entity";
+import {SalesPoint} from "../model/entity/sales-point.entity";
+import {Price} from "../model/entity/price.entity";
+import {DepartmentalStatistic} from "../model/entity/statistic/departemental-statistic.entity";
+import {NationalStatistic} from "../model/entity/statistic/national-statistic.entity";
+import {RegionalStatistic} from "../model/entity/statistic/regional-statistic.entity";
 
 @Injectable()
 export class StatisticService {
