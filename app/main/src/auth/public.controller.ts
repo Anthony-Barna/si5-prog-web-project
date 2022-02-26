@@ -2,10 +2,13 @@ import {Body, Controller, HttpStatus, Post} from '@nestjs/common';
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {AuthService} from "./auth.service";
 import {UserService} from "../user/user.service";
-import {User} from "../entity/user.entity";
+import {User} from "../model/entity/user.entity";
+import {UserDtoOut} from "../model/dto/out/user.entity";
+import {LoginInfo} from "../model/login-info";
+import {JwtToken} from "../model/jwt-token";
 
 @ApiTags('public')
-@Controller('public')
+@Controller('')
 export class PublicController {
 
     constructor(
@@ -19,16 +22,18 @@ export class PublicController {
         status: HttpStatus.CREATED,
         description: "User created",
     })
-    async register(@Body() body: User): Promise<User> {
-        return this.userService.createUser(body);
+    async register(@Body() body: User): Promise<UserDtoOut> {
+        return new UserDtoOut(await this.userService.createUser(body));
     }
 
     @Post('/login')
     @ApiOperation({summary: "Authenticates an user"})
     @ApiResponse({
         status: HttpStatus.CREATED,
-        description: "User authenticated",
+        description: "jwt generated after user authentication",
+        type: JwtToken,
     })
-    async login(): Promise<any> {
+    async login(@Body() loginInfo: LoginInfo): Promise<any> {
+        return await this.authService.login(loginInfo);
     }
 }

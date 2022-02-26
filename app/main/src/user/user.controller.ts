@@ -1,16 +1,19 @@
-import {BadRequestException, Controller, Delete, Get, HttpStatus, Param} from '@nestjs/common';
+import {BadRequestException, Controller, Delete, Get, HttpStatus, Param, UseGuards} from '@nestjs/common';
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {UserService} from "./user.service";
-import {User} from "../entity/user.entity";
+import {User} from "../model/entity/user.entity";
+import {UserDtoOut} from "../model/dto/out/user.entity";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 
 @ApiTags("/api/users")
 @Controller('/api/users')
+@UseGuards(JwtAuthGuard)
 export class UserController {
 
     constructor(private readonly userService: UserService) {}
 
     @Get('/:email')
-    @ApiOperation({ summary: "Return an user by email" })
+    @ApiOperation({summary: "Return an user by email"})
     @ApiResponse({
         status: HttpStatus.OK,
         description: "Ok",
@@ -24,11 +27,11 @@ export class UserController {
         status: HttpStatus.BAD_REQUEST,
         description: "Email not mentioned",
     })
-    findByEmail(@Param() params): Promise<User> {
-        if(!params.email) {
+    async findByEmail(@Param() params): Promise<UserDtoOut> {
+        if (!params.email) {
             throw new BadRequestException("Email not mentioned");
         }
-        return this.userService.findByEmail(params.email);
+        return new UserDtoOut(await this.userService.findByEmail(params.email));
     }
 
     @Delete('/:email')

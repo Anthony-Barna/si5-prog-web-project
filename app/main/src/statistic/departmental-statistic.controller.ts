@@ -1,10 +1,12 @@
-import {Controller, Get, HttpCode, HttpStatus, Logger, Put} from '@nestjs/common';
+import {Controller, Get, HttpCode, HttpStatus, Logger, Put, UseGuards} from '@nestjs/common';
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {StatisticService} from "./statistic.service";
-import {Statistic} from "../entity/statistic/statistic.entity";
+import {Statistic} from "../model/entity/statistic/statistic.entity";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 
 @ApiTags("/api/departmental-statistics")
 @Controller('/api/departmental-statistics')
+@UseGuards(JwtAuthGuard)
 export class DepartmentalStatisticController {
 
     constructor(private readonly statisticService: StatisticService) {}
