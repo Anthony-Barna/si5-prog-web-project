@@ -15,7 +15,7 @@ GET localhost:8080/api
 ```
 
 ## How to send request on jwt protected endpoint
-A jwt token is returned on a successful login.
+A jwt token is returned on a successful login. The token is valid one hour.  
 
 On postman, you can send a request on a protected endpoint by this way : https://learning.postman.com/docs/sending-requests/authorization/#bearer-token  
 
