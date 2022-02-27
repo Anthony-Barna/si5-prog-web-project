@@ -4,7 +4,7 @@ import {User} from "../model/entity/user.entity";
 import {EncryptService} from "./encrypt.service";
 import {LoginInfo} from "../model/login-info";
 import {JwtService} from "@nestjs/jwt";
-import {UserDtoOut} from "../model/dto/out/user.entity";
+import {UserDtoOut} from "../model/dto/out/user.dto.out";
 
 @Injectable()
 export class AuthService {

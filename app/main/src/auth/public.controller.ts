@@ -3,7 +3,7 @@ import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {AuthService} from "./auth.service";
 import {UserService} from "../user/user.service";
 import {User} from "../model/entity/user.entity";
-import {UserDtoOut} from "../model/dto/out/user.entity";
+import {UserDtoOut} from "../model/dto/out/user.dto.out";
 import {LoginInfo} from "../model/login-info";
 import {JwtToken} from "../model/jwt-token";
 
