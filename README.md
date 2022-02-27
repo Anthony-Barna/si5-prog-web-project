@@ -3,7 +3,7 @@
 ## Team members
 - [Anthony Barna](https://github.com/Anthony-Barna)
 - [Leo Burette](https://github.com/LeoBurette)
-- [Hadrien Bonato Pape](https://github.com/Hadrien-Bonato-Pape)
+- [Hadrien Bonato--Pape](https://github.com/Hadrien-Bonato-Pape)
 - [Jérôme Froment](https://github.com/JeromeFroment)
 
 ## Frontend repository
@@ -18,7 +18,7 @@ Run the project
 ```bash
 $ ./run.sh
 ```
-
+The web app is now available at : [http://localhost:8080](http://localhost:8080)
 ## You can see the api documentation on :
 ```text
 GET localhost:8080/api
