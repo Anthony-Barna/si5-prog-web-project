@@ -34,12 +34,17 @@ export class SalesPointService {
       where["presence"] = road;
     }
 
-    if (fuel) {
+    if (fuel && !price) {
       where["prices.name"] = fuel;
     }
 
     if (price) {
-      where["prices.value"] = { $lt: +price };
+      where["prices"] = {
+        $elemMatch: {
+          name: fuel,
+          value: { $lte: +price }
+        }
+      }
     }
 
     if (distance) {

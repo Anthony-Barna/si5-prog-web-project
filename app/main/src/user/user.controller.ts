@@ -2,7 +2,7 @@ import {BadRequestException, Controller, Delete, Get, HttpStatus, Param, UseGuar
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {UserService} from "./user.service";
 import {User} from "../model/entity/user.entity";
-import {UserDtoOut} from "../model/dto/out/user.entity";
+import {UserDtoOut} from "../model/dto/out/user.dto.out";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 
 @ApiTags("/api/users")
