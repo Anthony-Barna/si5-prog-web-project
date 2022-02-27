@@ -7,9 +7,14 @@ import {StatisticModule} from './statistic/statistic.module';
 import {AuthModule} from './auth/auth.module';
 import {UserModule} from './user/user.module';
 import {User} from "./model/entity/user.entity";
+import {ServeStaticModule} from '@nestjs/serve-static';
+import {join} from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../..', 'client-build'),
+    }),
     TypeOrmModule.forRoot({
       type: "mongodb",
       host: "localhost",

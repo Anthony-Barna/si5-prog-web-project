@@ -62,11 +62,16 @@ export class SalesPointService {
     });
   }
 
+  async salesPointPopulated(): Promise<boolean> {
+    return await this.salesPointRepository.count() !== 0;
+  }
+
   // Must be called before sorting by position
   async indexPositions(): Promise<void> {
     await this.salesPointRepository.createCollectionIndex({
       position: "2dsphere",
     });
+    Logger.log("Positions indexed");
   }
 
   async persistSalesPoints(salesPointsString: string): Promise<void> {

@@ -5,8 +5,7 @@ import {Statistic} from "./statistic.entity";
 export class NationalStatistic extends Statistic {
 
     constructor() {
-        super();
-        this.type = Statistic.NATIONAL_TYPE;
+        super(Statistic.NATIONAL_TYPE);
         this.code = "France";
     }
 

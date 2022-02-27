@@ -5,8 +5,7 @@ import {Statistic} from "./statistic.entity";
 export class DepartmentalStatistic extends Statistic {
 
     constructor() {
-        super();
-        this.type = Statistic.DEPARTMENTAL_TYPE
+        super(Statistic.DEPARTMENTAL_TYPE);
     }
 
 }

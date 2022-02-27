@@ -1,0 +1,31 @@
+{
+  "files": {
+    "main.css": "/static/css/main.cc298c99.chunk.css",
+    "main.js": "/static/js/main.f93b627b.chunk.js",
+    "main.js.map": "/static/js/main.f93b627b.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.6e9e3a5a.js",
+    "runtime-main.js.map": "/static/js/runtime-main.6e9e3a5a.js.map",
+    "static/css/2.171a7357.chunk.css": "/static/css/2.171a7357.chunk.css",
+    "static/js/2.a9decc34.chunk.js": "/static/js/2.a9decc34.chunk.js",
+    "static/js/2.a9decc34.chunk.js.map": "/static/js/2.a9decc34.chunk.js.map",
+    "static/js/3.07f192d8.chunk.js": "/static/js/3.07f192d8.chunk.js",
+    "static/js/3.07f192d8.chunk.js.map": "/static/js/3.07f192d8.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.536deecba45b80e20e8cda7ed3d68f42.js": "/precache-manifest.536deecba45b80e20e8cda7ed3d68f42.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.171a7357.chunk.css.map": "/static/css/2.171a7357.chunk.css.map",
+    "static/css/main.cc298c99.chunk.css.map": "/static/css/main.cc298c99.chunk.css.map",
+    "static/js/2.a9decc34.chunk.js.LICENSE.txt": "/static/js/2.a9decc34.chunk.js.LICENSE.txt",
+    "static/media/gas-station-green.png": "/static/media/gas-station-green.b4e47a4d.png",
+    "static/media/gas-station-red.png": "/static/media/gas-station-red.b512517e.png",
+    "static/media/gas-station.png": "/static/media/gas-station.920f0bdf.png",
+    "static/media/pinContrast.png": "/static/media/pinContrast.c0fbf345.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.6e9e3a5a.js",
+    "static/css/2.171a7357.chunk.css",
+    "static/js/2.a9decc34.chunk.js",
+    "static/css/main.cc298c99.chunk.css",
+    "static/js/main.f93b627b.chunk.js"
+  ]
+}
