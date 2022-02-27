@@ -10,8 +10,12 @@
 https://github.com/JeromeFroment/gas-price-ui
 
 ## How to start the project :
+Build the project
 ```bash
 $ ./build.sh
+```
+Run the project
+```bash
 $ ./run.sh
 ```
 
