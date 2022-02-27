@@ -5,8 +5,7 @@ import {Statistic} from "./statistic.entity";
 export class RegionalStatistic extends Statistic {
 
     constructor() {
-        super();
-        this.type = Statistic.REGIONAL_TYPE;
+        super(Statistic.REGIONAL_TYPE);
     }
 
 }

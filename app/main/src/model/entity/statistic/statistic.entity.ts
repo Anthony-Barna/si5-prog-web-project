@@ -25,7 +25,8 @@ export abstract class Statistic {
   @ApiProperty({ type: Price, isArray: true, description: "Average price for a fuel" })
   prices: Price[];
 
-  protected constructor() {
+  protected constructor(type: string) {
+    this.type = type;
     this.prices = [];
   }
 }

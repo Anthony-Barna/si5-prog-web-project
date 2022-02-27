@@ -1,12 +1,18 @@
-# si5-prog-web-project
-## Backend repository
+# si5-prog-web-project - Backend repository
+
+## Team members
+- [Anthony Barna](https://github.com/Anthony-Barna)
+- [Leo Burette](https://github.com/LeoBurette)
+- [Hadrien Bonato Pape](https://github.com/Hadrien-Bonato-Pape)
+- [Jérôme Froment](https://github.com/JeromeFroment)
+
+## Frontend repository
+https://github.com/JeromeFroment/gas-price-ui
 
 ## How to start the project :
 ```bash
-$ cd app/main
-$ docker-compose up -d  
-$ npm i 
-$ npm start
+$ ./build.sh
+$ ./run.sh
 ```
 
 ## You can see the api documentation on :

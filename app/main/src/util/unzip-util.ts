@@ -15,7 +15,7 @@ export class UnzipUtil {
       const file = directory.files[0];
       const content = await file.buffer()
 
-      Logger.error("File upload success");
+      Logger.log("File upload success");
 
       return content.toString("latin1")
     }
