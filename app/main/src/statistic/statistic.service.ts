@@ -29,6 +29,12 @@ export class StatisticService {
         });
     }
 
+    public async updateAllStatistics(): Promise<void> {
+        this.updateDepartmentalStatistics().then(() => Logger.log("Departmental statistics updated"));
+        this.updateRegionalStatistics().then(() => Logger.log("Regional statistics updated"));
+        this.updateNationalStatistics().then(() => Logger.log("National statistics updated"));
+    }
+
     public async updateNationalStatistics(): Promise<void> {
         await this.deleteAllStatistics(Statistic.NATIONAL_TYPE);
         Logger.log("Old national statistics deleted");

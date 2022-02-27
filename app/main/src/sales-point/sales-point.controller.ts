@@ -4,7 +4,7 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
-  Logger,
+  Logger, OnApplicationBootstrap,
   Post,
   Query,
   UploadedFile,
@@ -22,7 +22,7 @@ import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 @ApiTags("/api/sales-points")
 @Controller("/api/sales-points")
 @UseGuards(JwtAuthGuard)
-export class SalesPointController {
+export class SalesPointController implements OnApplicationBootstrap {
   private readonly LOCAL: string = "local";
   private readonly REMOTE: string = "remote";
 
@@ -150,13 +150,24 @@ export class SalesPointController {
           }
         }
       })
-      .then(() =>
-      {
-        this.salesPointService.indexPositions().then(() => Logger.log("Positions indexed"));
-        this.statisticsService.updateDepartmentalStatistics().then(() => Logger.log("Departmental statistics updated"));
-        this.statisticsService.updateRegionalStatistics().then(() => Logger.log("Regional statistics updated"));
-        this.statisticsService.updateNationalStatistics().then(() => Logger.log("National statistics updated"));
+      .then(() => {
+        this.salesPointService.indexPositions();
+        this.statisticsService.updateAllStatistics();
       }
       );
+  }
+
+  // At startup we populate the database remotely if it is empty
+  onApplicationBootstrap(): void {
+    if (!this.salesPointService.salesPointPopulated()) {
+      Logger.log("Automatic sales points population process starting");
+      this
+          .salesPointService
+          .persistDistantSalesPoints()
+          .then(() => {
+            this.salesPointService.indexPositions();
+            this.statisticsService.updateAllStatistics();
+          });
+    }
   }
 }
